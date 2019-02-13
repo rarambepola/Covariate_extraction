@@ -393,7 +393,7 @@ monthly_covariates_individual <- function(locations,
         cov_vals <- extract(cov_raster, SpatialPoints(ym_locations))
         cov_vals
      }
-    if(run_parallel) stopCluster(cl)
+
     
     # covariate_value_list_unique <- list()
     # for(j in 1:N_ymu){
@@ -418,6 +418,7 @@ monthly_covariates_individual <- function(locations,
     names(covariate_vals_list) <- paste0(covariates[i], "_", timelags[[i]])
     out_vals <- c(out_vals, covariate_vals_list)
   }
+  if(run_parallel) stopCluster(cl)
   
   return(out_vals)
 }
@@ -427,9 +428,9 @@ monthly_covariates_individual <- function(locations,
 
 
 # ########test
-mad_raster <- raster(paste0(zdrive_path,
-                            "Madagascar_incidence/CovariateData/5km/Monthly_variables/LST_day/LST_Day.2010.03.mean.5km.mean.tif"))
-mad_coords <- coordinates(mad_raster)
+# mad_raster <- raster(paste0(zdrive_path,
+#                             "Madagascar_incidence/CovariateData/5km/Monthly_variables/LST_day/LST_Day.2010.03.mean.5km.mean.tif"))
+# mad_coords <- coordinates(mad_raster)
 
 
 # test1 <- monthly_covariates(hf_list[index_use[1:10], ],
@@ -479,31 +480,32 @@ mad_coords <- coordinates(mad_raster)
 # print(proc.time() - ptm)
 
 
-##test monthly individual
-set.seed(12)
-#ptm <- proc.time()
-n_coords <- 10
-#n_times <- 1
-years_use <- sample(2013:2016, n_coords, replace=T)
-months_use <- sample(1:12, n_coords, replace=T)
-mad_coords_use <- mad_coords[sample.int(dim(mad_coords)[1], n_coords), ]
-test2 <- monthly_covariates_individual(mad_coords_use,
-                            years_use,
-                            months_use,
-                            c("Rain", "LST_day"),
-                            "5km",
-                            n_blur = 5,
-                            crop_extent=extent(mad_raster),
-                            timelags=list(c(0, 1), 0),
-                            run_parallel = TRUE,
-                            n_cores=2)
-test3 <- monthly_covariates(mad_coords_use[1:3, ],
-                            years_use[3],
-                            months_use[3],
-                            c("Rain", "LST_day"),
-                            "5km",
-                            n_blur = 5,
-                            crop_extent=extent(mad_raster),
-                            timelags=list(c(0, 1), 0),
-                            run_parallel=TRUE,
-                            n_cores=2)
+# ##test monthly individual
+# set.seed(12)
+# #ptm <- proc.time()
+# n_coords <- 10
+# #n_times <- 1
+# years_use <- sample(2013:2016, n_coords, replace=T)
+# months_use <- sample(1:12, n_coords, replace=T)
+# mad_coords_use <- mad_coords[sample.int(dim(mad_coords)[1], n_coords), ]
+# test2 <- monthly_covariates_individual(mad_coords_use,
+#                             years_use,
+#                             months_use,
+#                             c("Rain", "LST_day"),
+#                             "5km",
+#                             n_blur = 5,
+#                             crop_extent=extent(mad_raster),
+#                             timelags=list(c(0, 1), 0),
+#                             run_parallel = TRUE,
+#                             n_cores=2
+#                             )
+# test3 <- monthly_covariates(mad_coords_use[1:3, ],
+#                             years_use[3],
+#                             months_use[3],
+#                             c("Rain", "LST_day"),
+#                             "5km",
+#                             n_blur = 5,
+#                             crop_extent=extent(mad_raster),
+#                             timelags=list(c(0, 1), 0),
+#                             run_parallel=TRUE,
+#                             n_cores=2)
