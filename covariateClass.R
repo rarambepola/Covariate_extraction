@@ -111,19 +111,26 @@ rain_5k_test <- Covariate("Rain", "5km", "Monthly")
 temp_1k_test <- Covariate("LST_Day", "1km", "Annual")
 
 
-setGeneric("makeFilePath", function(covariate, ...) standardGeneric("makeFilePath"))
-setMethod("makeFilePath", "Covariate", function(covariate, year){
+setGeneric("makeFilePath", function(covariate, year, Token_2, ...) standardGeneric("makeFilePath"))
+setMethod("makeFilePath", signature(covariate="Covariate", year="numeric"), function(covariate, year){
   #if temporal resolution this will work fine
+  n_years <- length(year)
+  #outpaths <- c()
+  #print(n_years)
   if(covariate@temporal_resolution == "Annual"){
-    covariate@Token_1 <- as.character(year)
+    if(min(nchar(year)) < 4) stop("years must be 4 digits long")
     covariate@Token_2 <- "Annual"
+    covariate@Token_1 <- as.character(year)
+    #print(length(pasteFilePath(covariate)))
+    #outpaths[i] <- pasteFilePath(covariate)[2]
+
   }else{
     stop("full date not supplied")
   }
   return(pasteFilePath(covariate))
 })
 
-setMethod("makeFilePath", "Covariate", function(covariate, year, Token_2){
+setMethod("makeFilePath", signature(covariate="Covariate", year="numeric", Token_2="numeric"), function(covariate, year, Token_2){
   #if temporal resolution is annual throw an error
   if(covariate@temporal_resolution == "Annual"){
     stop("date or month supplied to Annual covariate")
@@ -154,5 +161,8 @@ pasteFilePath <- function(covariate){
 
 
 #makeFilePath(rain_5k_test, 2011)
-print(makeFilePath(temp_1k_test, 2011))
+print(makeFilePath(temp_1k_test, c(2011, 201)))
 #print(pasteFilePath(temp_1k_test))
+
+
+#rain_5k_test <- Covariate("Rain", "5km", )
